@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+         <script src="../static/js/jquery.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+    <h3><a href="/">首页</a></h3>
+    
+        <div class="page-header">
+            <h1>
+            <%= data.title %>
+                <small><%= data.intro %></small>
+            </h1>
+        </div>
+        <div>
+            <p>
+                分类:<span class="label label-primary"><%= data.sort %></span>
+            </p>
+            <p>
+                作者:<%= data.author %>
+            </p>
+            <p>
+                日期:<%= data.date %>
+            </p>
+            <div class="well">
+                <%= data.content %>
+            </div>
+            <div class="page-header">
+                <h3>
+                    评论
+                </h3>
+            </div>
+            <ul class="list-group">
+            <% comment.forEach(function(e){ %>
+            <li class="list-group-item">
+                    <div class="panel panel-default">
+            <div class="panel-body">
+    <strong><%=e.content %></strong>
+    
+  </div>
+  <div class="panel-footer"><%=e.author %> - <%=e.date %></div>
+</div>
+                </li>
+            <% }) %>
+                
+            </ul>
+            <div class="page-header">
+                <h3>
+                    我也想发表评论
+                </h3>
+            </div>
+            <form method='POST' action='/submitComment?_id=<%= data._id %>'>
+        <div class="form-group">
+            <label for="exampleInputEmail1">你的邮箱</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" name='email' placeholder="Email">
+        </div>
+        <div class="form-group">
+        <textarea class="form-control" rows="3" name='content'></textarea>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+        </form>     
+        </div>
+
+</body>
+
+</html>

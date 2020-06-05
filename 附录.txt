@@ -1,2 +1,12 @@
 主体青色#019689
 轮播图图片大小 1336*509
+
+
+play-film   电影
+play-variety   综艺
+play-mv   mv
+play-tv   电视剧
+play-anime   动漫
+play-kid   少儿
+play-documentary 纪录片
+play-travel 旅行

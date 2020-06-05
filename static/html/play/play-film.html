@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影</title>
+    <link href="../../../node_modules/video.js/dist/video-js.css" ref="stylesheet">
+    <style>
+        html,body{
+            height: 100%;
+            width: 100%;
+        }
+        .box {
+            width: 800px;
+            height: 500px;
+            margin: 0 auto;
+            display: block;
+            float: inherit;
+
+            
+        }
+
+        .barrage-container-wrap {
+            width: 100%;
+            height: 500px;
+            position: absolute;
+            top: 100px;
+            overflow: hidden;
+            display: inline-block;
+            z-index: 0;
+        }
+
+        .barrage-container {
+            position: relative;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 30px;
+            cursor: default;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .barrage-item {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            white-space: nowrap;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .barrage-item .barrage-tip {
+            display: none;
+            position: absolute;
+            top: -26px;
+            padding: 7px 15px;
+            line-height: 12px;
+            font-size: 12px;
+            color: #f20606;
+            background-color: #fff;
+            white-space: nowrap;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            -webkit-box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+            box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+            -webkit-transform-origin: 15px 100%;
+            -ms-transform-origin: 15px 100%;
+            transform-origin: 15px 100%;
+            webkit-animation: tipScale cubic-bezier(.22, .58, .12, .98) .4s;
+            animation: tipScale cubic-bezier(.22, .58, .12, .98) .4s;
+        }
+
+        .send-wrap {
+            margin-top: 20px;
+            position: absolute;
+            margin: 0xp auto;
+            top:630px;
+        }
+
+        .input {
+            width: 300px;
+            height: 30px;
+            line-height: 30px;
+            outline: none;
+            -webkit-appearance: none;
+            border-radius: 5px;
+            padding: 0;
+            padding-left: 10px;
+        }
+
+        .send-btn {
+            height: 38px;
+            line-height: 38px;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            background: #93d0ea;
+            text-shadow: 1px 1px 1px #333;
+            border-radius: 5px;
+            margin: 0 20px 20px 0;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            padding: 5px 15px;
+        }
+
+        @-webkit-keyframes tipScale {
+            0% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+
+            50% {
+                -webkit-transform: scale(1.1);
+                transform: scale(1.1);
+            }
+
+            100% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+        }
+
+        .video-js {
+            /* 给.video-js设置字体大小以统一各浏览器样式表现，因为video.js采用的是em单位 */
+            font-size: 14px;
+        }
+
+        .video-js button {
+            outline: none;
+        }
+
+        .video-js.vjs-fluid,
+        .video-js.vjs-16-9,
+        .video-js.vjs-4-3 {
+            /* 视频占满容器高度 */
+            height: 100%;
+            background-color: #161616;
+        }
+
+        .vjs-poster {
+            background-color: #161616;
+        }
+
+        .video-js .vjs-big-play-button {
+            /* 中间大的播放按钮 */
+            font-size: 2.5em;
+            line-height: 2.3em;
+            height: 2.5em;
+            width: 2.5em;
+            -webkit-border-radius: 2.5em;
+            -moz-border-radius: 2.5em;
+            border-radius: 2.5em;
+            background-color: rgba(115, 133, 159, .5);
+            border-width: 0.12em;
+            margin-top: -1.25em;
+            margin-left: -1.75em;
+        }
+
+        .video-js.vjs-paused .vjs-big-play-button {
+            /* 视频暂停时显示播放按钮 */
+            display: block;
+        }
+
+        .video-js.vjs-error .vjs-big-play-button {
+            /* 视频加载出错时隐藏播放按钮 */
+            display: none;
+        }
+
+        .vjs-loading-spinner {
+            /* 加载圆圈 */
+            font-size: 2.5em;
+            width: 2em;
+            height: 2em;
+            border-radius: 1em;
+            margin-top: -1em;
+            margin-left: -1.5em;
+        }
+
+        .video-js .vjs-control-bar {
+            /* 控制条默认显示 */
+            display: flex;
+        }
+
+        .video-js .vjs-time-control {
+            display: block;
+        }
+
+        .video-js .vjs-remaining-time {
+            display: none;
+        }
+
+        .vjs-button>.vjs-icon-placeholder:before {
+            /* 控制条所有图标，图标字体大小最好使用px单位，如果使用em，各浏览器表现可能会不大一样 */
+            font-size: 22px;
+            line-height: 1.9;
+        }
+
+        .video-js .vjs-playback-rate .vjs-playback-rate-value {
+            line-height: 2.4;
+            font-size: 18px;
+        }
+
+        /* 进度条背景色 */
+        .video-js .vjs-play-progress {
+            color: #ffb845;
+            background-color: #ffb845;
+        }
+
+        .video-js .vjs-progress-control .vjs-mouse-display {
+            background-color: #ffb845;
+        }
+
+        .vjs-mouse-display .vjs-time-tooltip {
+            padding-bottom: 6px;
+            background-color: #ffb845;
+        }
+
+        .video-js .vjs-play-progress .vjs-time-tooltip {
+            display: none !important;
+        }
+
+        .vjs-paused .vjs-big-play-button,
+        .vjs-paused.vjs-has-started .vjs-big-play-button {
+            display: block;
+        }
+
+        #example_video {
+            width: 800px;
+            height: 500px;
+            margin: 0px auto;
+            text-align: center;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="margin: 0px auto; text-align: center;margin-top: 30px;">电影频道</h1>
+    
+        <div class="box">
+           
+        <video id="example_video" class="video-js vjs-default-skin vjs-big-play-centered" controls
+            poster="http://img5.imgtn.bdimg.com/it/u=100473623,2923668600&fm=26&gp=0.jpg" preload="metadata" style=" position: absolute;top: 156px;visibility:visible">
+    
+            <source src="http://v.egbert.fun/sv/3c7414db-171de74310c/3c7414db-171de74310c.mp4" type="video/mp4">
+        </video>
+            <div class="barrage-container-wrap " style="">
+                <div class="barrage-container">
+                </div>
+            </div>
+            <div class="send-wrap">
+                <input type="text" class="input" placeholder="弹幕发送">
+                <span class="send-btn">发送</span>
+            </div>
+        </div>
+  
+    <script src="../../../node_modules/video.js/dist/video.js" type="text/javascript">
+        var player = videojs('example_video');
+    </script>
+    <script type="text/javascript">
+        ;
+        (function () {
+            var barrageArray = [{
+                    url: '用户头像',
+                    text: '秋天爱美丽',
+                    level: 10
+                },
+                {
+                    url: '用户头像',
+                    text: '今天很开心啊',
+                    level: 10
+                },
+                {
+                    url: '用户头像',
+                    text: 'winter has come',
+                    level: 10
+                },
+                {
+                    url: '',
+                    text: '土耳其现在形势',
+                    level: 10
+                },
+                {
+                    url: '',
+                    text: '没事早点回家吃饭啊',
+                    level: 10
+                },
+                {
+                    url: '',
+                    text: '这主角真实醉了，不会回啊',
+                    level: 10
+                },
+                {
+                    url: '',
+                    text: '背景音乐真好听啊',
+                    level: 10
+                },
+                {
+                    url: '',
+                    text: '背景音乐是***',
+                    level: 10
+                },
+                {
+                    url: '',
+                    text: '经费在燃烧啊',
+                    level: 10
+                },
+                {
+                    url: '',
+                    text: '国产良心剧',
+                    level: 10
+                },
+            ];
+            var barrageColorArray = [
+                '#0099CC', '#333333', '#009966', '#FFFF66', '#9933FF', '#FFFF99', '#CCCCFF', '#CC9933',
+                '#FFFF66'
+            ];
+            var barrageTipWidth = 50; //提示语的长度
+
+            var barrageBoxWrap = document.querySelector('.barrage-container-wrap');;
+            var barrageBox = document.querySelector('.barrage-container');
+            var inputBox = document.querySelector('.input');
+            var sendBtn = document.querySelector('.send-btn');
+
+            //容器的宽高度
+            var barrageWidth = ~~window.getComputedStyle(barrageBoxWrap).width.replace('px', '');
+            var barrageHeight = ~~window.getComputedStyle(barrageBoxWrap).height.replace('px', '');
+
+            //发送
+            function sendMsg() {
+                var inputValue = inputBox.value;
+                inputValue.replace(/\ +/g, "");
+
+                if (inputValue.length <= 0) {
+                    alert('请输入');
+                    return false;
+                }
+
+                //生成弹幕
+                createBarrage(inputValue, true);
+                inputBox.value = '';
+            }
+
+
+            //创建弹幕
+            function createBarrage(msg, isSendMsg) {
+                var divNode = document.createElement('div');
+                var spanNode = document.createElement('span');
+
+                divNode.innerHTML = msg;
+                divNode.classList.add('barrage-item');
+                barrageBox.appendChild(divNode);
+
+                spanNode.innerHTML = '举报';
+                spanNode.classList.add('barrage-tip');
+                divNode.appendChild(spanNode);
+
+                barrageOffsetLeft = getRandom(barrageWidth, barrageWidth * 2);
+                barrageOffsetLeft = isSendMsg ? barrageWidth : barrageOffsetLeft
+                barrageOffsetTop = getRandom(10, barrageHeight - 10);
+                barrageColor = barrageColorArray[Math.floor(Math.random() * (barrageColorArray.length))];
+
+                //执行初始化滚动
+                initBarrage.call(divNode, {
+                    left: barrageOffsetLeft,
+                    top: barrageOffsetTop,
+                    color: barrageColor
+                });
+            }
+
+            //初始化弹幕移动(速度，延迟)
+            function initBarrage(obj) {
+                //初始化
+                obj.top = obj.top || 0;
+                obj.class = obj.color || '#fff';
+                this.style.left = obj.left + 'px';
+                this.style.top = obj.top + 'px';
+                this.style.color = obj.color;
+
+                //添加属性
+                this.distance = 0;
+                this.width = ~~window.getComputedStyle(this).width.replace('px', '');
+                this.offsetLeft = obj.left;
+                this.timer = null;
+
+                //弹幕子节点
+                var barrageChileNode = this.children[0];
+                barrageChileNode.style.left = (this.width - barrageTipWidth) / 2 + 'px';
+
+                //运动
+                barrageAnimate(this);
+
+                //停止
+                this.onmouseenter = function () {
+                    barrageChileNode.style.display = 'block';
+                    cancelAnimationFrame(this.timer);
+                };
+
+                this.onmouseleave = function () {
+                    barrageChileNode.style.display = 'none';
+                    barrageAnimate(this);
+                };
+
+                //举报
+                barrageChileNode.onclick = function () {
+                    alert('举报成功');
+                }
+            }
+
+            //弹幕动画
+            function barrageAnimate(obj) {
+                move(obj);
+
+                if (Math.abs(obj.distance) < obj.width + obj.offsetLeft) {
+                    obj.timer = requestAnimationFrame(function () {
+                        barrageAnimate(obj);
+                    });
+                } else {
+                    cancelAnimationFrame(obj.timer);
+                    //删除节点
+                    obj.parentNode.removeChild(obj);
+                }
+            }
+
+            //移动
+            function move(obj) {
+                obj.distance--;
+                obj.style.transform = 'translateX(' + obj.distance + 'px)';
+                obj.style.webkitTransform = 'translateX(' + obj.distance + 'px)';
+            }
+
+            //随机获取高度
+            function getRandom(start, end) {
+                return start + (Math.random() * (end - start) * 0.7);
+            }
+
+
+            /*******初始化事件**********/
+            //系统数据
+            barrageArray.forEach(function (item, index) {
+                createBarrage(item.text, false);
+            });
+
+            //点击发送
+            sendBtn.onclick = sendMsg; //点击发送
+
+            //回车
+            inputBox.onkeydown = function (e) {
+                e = e || window.event;
+                if (e.keyCode == 13) {
+                    send();
+                }
+            }
+
+        })()
+
+        //兼容写法
+        (function () {
+            var lastTime = 0;
+            var vendors = ['webkit', 'moz'];
+            for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+                window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+                window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || // Webkit中此取消方法的名字变了
+                    window[vendors[x] + 'CancelRequestAnimationFrame'];
+            }
+
+            if (!window.requestAnimationFrame) {
+                window.requestAnimationFrame = function (callback, element) {
+                    var currTime = new Date().getTime();
+                    var timeToCall = Math.max(0, 16.7 - (currTime - lastTime));
+                    var id = window.setTimeout(function () {
+                        callback(currTime + timeToCall);
+                    }, timeToCall);
+                    lastTime = currTime + timeToCall;
+                    return id;
+                };
+            }
+            if (!window.cancelAnimationFrame) {
+                window.cancelAnimationFrame = function (id) {
+                    clearTimeout(id);
+                };
+            }
+        }());
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>爱奇艺导航</title>
+    <style type="text/css">
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        #nav {
+            list-style-type: none;
+            float: right;
+            padding: 0;
+            margin: 0;
+            z-index: 0;
+            padding-top: 30px;
+ 
+        }
+ 
+        #nav li {
+            width: 220px;
+            height: 40px;
+            line-height: 40px;;
+            /*background-color: #569e04;*/
+            background-color: #010101;
+            border-bottom: 1px solid #999999;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        #nav .now{
+            background-color: #569e04;
+        }
+        #pic {
+            list-style-type: none;
+            height: 410px;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            top: 0;
+            z-index: -1;
+            /*display: none;*/
+            overflow: hidden;
+        }
+ 
+    </style>
+</head>
+<body>
+<div class="nav">
+    <ul id="nav">
+        <li οnmοusemοve="fun('0')" class="now">余罪</li>
+        <li οnmοusemοve="fun('1')">我们的法则</li>
+        <li οnmοusemοve="fun('2')">跑男</li>
+        <li οnmοusemοve="fun('3')">废柴兄弟</li>
+        <li οnmοusemοve="fun('4')">最好的我们</li>
+        <li οnmοusemοve="fun('5')">大张伟</li>
+        <li οnmοusemοve="fun('6')">WWDC大会</li>
+        <li οnmοusemοve="fun('7')">我的朋友</li>
+    </ul>
+    <div id="pic">
+        <div><img src="../images/index/1.jpg"></div>
+        <div><img src="../images/index/2.jpg"></div>
+        <div><img src="../images/index/3.jpg"></div>
+        <div><img src="../images/index/4.jpg"></div>
+        <div><img src="../images/index/5.jpg"></div>
+        <div><img src="../images/index/6.jpg"></div>
+        <div><img src="../images/index/7.jpg"></div>
+        <div><img src="../images/index/8.jpg"></div>
+    </div>
+</div>
+<script>
+    var nav = document.getElementById("nav").getElementsByTagName("li");
+    var navshow = document.getElementById("pic").getElementsByTagName("div");
+    function fun(num) {
+        for (var n = 0; n < nav.length; n++) {
+            nav[n].className="";
+        }
+        nav[num].className="now";
+ 
+        for(var m=0;m<navshow.length;m++){
+            navshow[m].style.display="none";
+        }
+        navshow[num].style.display="block";
+    }
+ 
+</script>
+</body>
+</html>
